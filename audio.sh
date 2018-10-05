@@ -23,6 +23,9 @@ mutestate=$(cat $state | grep set-sink-mute   | cut -d" " -f3)
 
 # --------------------------------------------------
 # useful constants
+ME=$(basename $0)
+REAL_ME=$(readlink -f $0)
+
 max_volume="0x10000"
 inc=$(($max_volume / 20))
 
@@ -90,7 +93,19 @@ toggle_mute() {
 
 # --------------------------------------------------
 # PARSE COMMANDLINE ARGS
-[[ $# == '0' ]] && getstate             # if no args, show state
+
+# If this script is called via symlink
+command='default'
+case $ME in
+  'vup')    command='+' ;;   
+  'vdown')  command='-' ;; 
+  'vmute')  command='m' ;;
+  'vstate') command='a' ;;
+esac
+[[ "$command" != 'default' ]] && $REAL_ME $command && exit 0
+
+
+# If this script is called as audio.sh
 set -- $(echo "$@" | perl -pe 's// /g') # expand all args so there are
                                         # whitespaces between each char
 case "$1" in
@@ -98,7 +113,8 @@ case "$1" in
   '+' ) up          ; shift ; $0 $@ ;;
   'm' ) toggle_mute ; shift ; $0 $@ ;;
   'a' ) getall      ; shift ; $0 $@ ;;
-  '=' ) print_bar   ;;
+  '=' ) print_bar ;;
+  *   ) getstate  ;;
 esac
 
 exit 0
