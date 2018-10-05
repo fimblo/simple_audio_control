@@ -1,20 +1,17 @@
-# > pacmd dump | grep -v load-module| unc | sort | tr " " \\t
-#set-card-profile    alsa_card.pci-0000_00_1f.3                         output:analog-stereo+input:analog-stereo
+#!/bin/bash
+# --------------------------------------------------
+# audio.sh - modify pulseaudio state from commandline
 #
-#set-default-source  alsa_input.pci-0000_00_1f.3.analog-stereo
-#set-source-mute     alsa_input.pci-0000_00_1f.3.analog-stereo          no
-#set-source-volume   alsa_input.pci-0000_00_1f.3.analog-stereo          0xe1e1
-#suspend-source      alsa_input.pci-0000_00_1f.3.analog-stereo          yes
-#
-#set-default-sink    alsa_output.pci-0000_00_1f.3.analog-stereo
-#set-sink-mute       alsa_output.pci-0000_00_1f.3.analog-stereo         yes
-#set-sink-volume     alsa_output.pci-0000_00_1f.3.analog-stereo         0x5000
-#suspend-sink        alsa_output.pci-0000_00_1f.3.analog-stereo         yes
+# Some descriptive text here
+# fimblo@yanson.org
+# --------------------------------------------------
 
-#set-source-mute     alsa_output.pci-0000_00_1f.3.analog-stereo.monitor no
-#set-source-volume   alsa_output.pci-0000_00_1f.3.analog-stereo.monitor 0x10000
-#suspend-source      alsa_output.pci-0000_00_1f.3.analog-stereo.monitor yes
 
+
+# --------------------------------------------------
+# VARIABLES
+
+# Get audio source, sink and state
 state=$(mktemp); trap 'rm -f $state' 0
 pacmd dump > $state
 
@@ -24,16 +21,22 @@ source=$(cat $state | grep set-default-source | cut -d" " -f2)
 volstate=$(cat $state  | grep set-sink-volume | cut -d" " -f3)
 mutestate=$(cat $state | grep set-sink-mute   | cut -d" " -f3)
 
+# --------------------------------------------------
+# useful constants
 max_volume="0x10000"
 inc=$(($max_volume / 20))
 
+# --------------------------------------------------
+# FUNCTIONS
+
+# Returns volume 0-100
 getratio() {
   ratio=$(( 1 + ( volstate * 100 ) / max_volume ))
   [[ $(( $ratio % 5 )) == '1' ]] && ratio=$(( ratio - 1 ))
   echo $ratio
 }
 
-
+# Returns volume expressed as a string, useful for i3bar in i3wm
 print_bar() {
   ratio=$(getratio)
   volume=$(( ratio / 10 ))
@@ -47,6 +50,7 @@ print_bar() {
   exit 0
 }
 
+# Print audio state and exit
 getstate() {
   ratio=$(getratio)
   cat <<-EOF
@@ -56,6 +60,7 @@ getstate() {
   exit 0
 }
 
+# Print source and sink
 getall() {
   cat <<-EOF
 	sink:      $sink
@@ -63,25 +68,28 @@ getall() {
 	EOF
 }
 
-
+# Turn volume up by $inc
 up() {
   new=$((volstate + inc))
   [[ $new -gt $max_volume ]] && new=$max_volume
   pactl set-sink-volume $sink $(printf "0x%X" $new)
 }
+
+# Turn volume down by $inc
 down() {
   new=$((volstate - inc))
   [[ $new -lt $((0x00000)) ]] && new="0x00000"
   pactl set-sink-volume $sink $(printf "0x%X" $new)
 }
 
+# Toggle mute state
 toggle_mute() {
   pactl set-sink-mute $sink toggle
 }
 
 
-# deal with user's wishes
-
+# --------------------------------------------------
+# PARSE COMMANDLINE ARGS
 [[ $# == '0' ]] && getstate             # if no args, show state
 set -- $(echo "$@" | perl -pe 's// /g') # expand all args so there are
                                         # whitespaces between each char
@@ -91,7 +99,6 @@ case "$1" in
   'm' ) toggle_mute ; shift ; $0 $@ ;;
   'a' ) getall      ; shift ; $0 $@ ;;
   '=' ) print_bar   ;;
-  
 esac
 
-
+exit 0
