@@ -33,7 +33,7 @@ inc=$(($max_volume / 20))
 # FUNCTIONS
 
 # short usage
-usage-short() {
+usage() {
   cat<<-EOF
 	A command-line tool for manupulating pulseaudio sound state
     
@@ -72,10 +72,8 @@ usage-short() {
   exit 0
 }
 
-
-
 # Returns volume 0-100
-getratio() {
+_getratio() {
   ratio=$(( 1 + ( volstate * 100 ) / max_volume ))
   [[ $(( $ratio % 5 )) == '1' ]] && ratio=$(( ratio - 1 ))
   echo $ratio
@@ -83,7 +81,7 @@ getratio() {
 
 # Returns volume expressed as a string, useful for i3bar in i3wm
 print_bar() {
-  ratio=$(getratio)
+  ratio=$(_getratio)
   volume=$(( ratio / 10 ))
   floor=$(( volume - 10 ))
   while [[ $volume -ge $floor ]] ; do
@@ -92,17 +90,15 @@ print_bar() {
   done
 
   echo
-  exit 0
 }
 
-# Print audio state and exit
+# Print audio state
 getstate() {
-  ratio=$(getratio)
+  ratio=$(_getratio)
   cat <<-EOF
 	volstate:  $ratio/100
 	mutestate: $mutestate
 	EOF
-  exit 0
 }
 
 # Print source and sink
@@ -148,7 +144,7 @@ esac
 
 
 # If this script is called as audio.sh
-[[ "$1" == '-h' || "$1" == '--help' ]] && usage-short
+[[ "$1" == '-h' || "$1" == '--help' ]] && usage
 set -- $(echo "$@" | perl -pe 's// /g') # expand all args so there are
                                         # whitespaces between each char
 case "$1" in
@@ -156,8 +152,7 @@ case "$1" in
   '+' ) up          ; shift ; $0 $@ ;;
   'm' ) toggle_mute ; shift ; $0 $@ ;;
   'a' ) getall      ; shift ; $0 $@ ;;
-  '=' ) print_bar   ;;
-  'h' ) usage-short ;;
+  '=' ) print_bar   ; shift ; $0 $@ ;;
   *   ) getstate    ;;
 esac
 
