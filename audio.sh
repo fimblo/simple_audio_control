@@ -84,11 +84,9 @@ print_bar() {
   volume=$(( ratio / 10 ))
   floor=$(( volume - 10 ))
   while [[ $volume -ge $floor ]] ; do
-    [[ $volume -ge 0 ]] && echo -n "|" || echo -n "."
+    [[ $volume -ge 0 ]] && echo -n "♪" || echo -n "."
     volume=$(( volume - 1 ))
   done
-
-  echo
 }
 
 # Print audio state
@@ -151,7 +149,7 @@ case "$1" in
   '+' ) up          ; shift ; $0 $@ ;;
   'm' ) toggle_mute ; shift ; $0 $@ ;;
   'a' ) getall      ; shift ; $0 $@ ;;
-  '=' ) print_bar   ; shift ; $0 $@ ;;
+  '=' ) print_bar   ;;
   *   ) getstate    ;;
 esac
 
