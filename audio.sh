@@ -139,7 +139,7 @@ case $ME in
   'vmute')  command='m' ;;
   'vstate') command='a' ;;
 esac
-[[ "$command" != 'default' ]] && $REAL_ME $command && exit 0
+[[ "$command" != 'default' ]] && $REAL_ME $@ $command && exit 0
 
 
 # If this script is called as audio.sh
