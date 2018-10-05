@@ -61,7 +61,6 @@ getall() {
 	sink:      $sink
 	source:    $source
 	EOF
-  getstate
 }
 
 
@@ -90,8 +89,8 @@ case "$1" in
   '-' ) down        ; shift ; $0 $@ ;;
   '+' ) up          ; shift ; $0 $@ ;;
   'm' ) toggle_mute ; shift ; $0 $@ ;;
+  'a' ) getall      ; shift ; $0 $@ ;;
   '=' ) print_bar   ;;
-  'a' ) getall      ;;
   
 esac
 
