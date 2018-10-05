@@ -3,14 +3,13 @@
 	A command-line tool for manupulating pulseaudio sound state
     
 	audio.sh, vup, vdown, vmute, vstate
-	Usage: audio.sh [-+ma]+ [=|h]
+	Usage: audio.sh [-h|--help] [ma-+]+ [=]
 	
 	Run audio.sh without arguments and get current sink volume and mute
 	state.
 	
 	Run audio.sh with an arbritrary number of commands, each command
 	represented by a symbol:
-	h  Show usage 
 	  -  Turn the volume down by 5%
 	  +  Turn the volume up by 5%
 	  m  Toggle mute state
