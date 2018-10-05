@@ -77,8 +77,7 @@ down() {
 }
 
 toggle_mute() {
-  echo 'mute: not implemented yet'
-  exit 0
+  pactl set-sink-mute $sink toggle
 }
 
 
@@ -90,7 +89,7 @@ set -- $(echo "$@" | perl -pe 's// /g') # expand all args so there are
 case "$1" in
   '-' ) down        ; shift ; $0 $@ ;;
   '+' ) up          ; shift ; $0 $@ ;;
-  'm' ) toggle_mute ;;
+  'm' ) toggle_mute ; shift ; $0 $@ ;;
   '=' ) print_bar   ;;
   'a' ) getall      ;;
   
