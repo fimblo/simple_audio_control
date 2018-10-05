@@ -35,8 +35,9 @@ inc=$(($max_volume / 20))
 # short usage
 usage-short() {
   cat<<-EOF
+	A command-line tool for manupulating pulseaudio sound state
+    
 	audio.sh, vup, vdown, vmute, vstate
-	
 	Usage: audio.sh [-+ma]+ [=|h]
 	
 	Run audio.sh without arguments and get current sink volume and mute
@@ -44,6 +45,7 @@ usage-short() {
 	
 	Run audio.sh with an arbritrary number of commands, each command
 	represented by a symbol:
+	h  Show usage 
 	  -  Turn the volume down by 5%
 	  +  Turn the volume up by 5%
 	  m  Toggle mute state
@@ -55,14 +57,17 @@ usage-short() {
 	  audio.sh m       Toggle mute state
 	  audio.sh +++     Turn volume up 15%
 	  audio.sh m----   Toggle mute, then turn volume down 20%
-	  audio.sh a       Show all info
-	  audio.sh h       This usage text
 	
 	Aliases
 	  vup is an alias for 'audio.sh +'
 	  vdown is an alias for 'audio.sh -'
 	  vmute is an alias for 'audio.sh m'
 	  vstate is an alias for 'audio.sh a'
+	
+	Aliases also support all arguments supported by audio.sh. So:
+	'vup ++' increases volume 15% (5% for each +, and 5% because it 
+	was called as vup.) Though meaningless, this means that you can
+	run 'vmute m', which will mute then unmute immediately.
 	EOF
   exit 0
 }
