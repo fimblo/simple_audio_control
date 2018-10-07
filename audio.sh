@@ -2,7 +2,18 @@
 # --------------------------------------------------
 # audio.sh - modify pulseaudio state from commandline
 #
-# Some descriptive text here
+# Usage (simple)
+#    vup           Turn volume up 5%
+#    vdown         Turn volume down 5%
+#    vstate        Toggle mute state
+#    vstate        Show audio state
+#
+# Usage (complicated, unnecessary but fun)
+#    audio.sh +    Turn volume up 5%
+#    audio.sh ++   Turn volume up 10%
+#    audio.sh m+   Toggle mute state, then turn volume up 5%
+#    audio.sh ---  Turn volume down 15%
+#
 # fimblo@yanson.org
 # --------------------------------------------------
 
