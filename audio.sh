@@ -1,49 +1,7 @@
 #!/bin/bash
-# --------------------------------------------------
-# audio.sh - modify pulseaudio state from commandline
-#
-# Usage (simple)
-#    vup           Turn volume up 5%
-#    vdown         Turn volume down 5%
-#    vstate        Toggle mute state
-#    vstate        Show audio state
-#
-# Usage (complicated, unnecessary but fun)
-#    audio.sh +    Turn volume up 5%
-#    audio.sh ++   Turn volume up 10%
-#    audio.sh m+   Toggle mute state, then turn volume up 5%
-#    audio.sh ---  Turn volume down 15%
-#
+# 
 # fimblo@yanson.org
 # --------------------------------------------------
-
-
-
-# --------------------------------------------------
-# VARIABLES
-
-# Get audio source, sink and state
-state=$(mktemp); trap 'rm -f $state' 0
-pacmd dump > $state
-
-sink=$(cat $state   | grep set-default-sink   | cut -d" " -f2)
-source=$(cat $state | grep set-default-source | cut -d" " -f2)
-
-volstate=$(cat $state  | grep set-sink-volume | cut -d" " -f3)
-mutestate=$(cat $state | grep set-sink-mute   | cut -d" " -f3)
-
-# --------------------------------------------------
-# useful constants
-ME=$(basename $0)
-REAL_ME=$(readlink -f $0)
-
-max_volume="0x10000"
-inc=$(($max_volume / 20))
-
-# --------------------------------------------------
-# FUNCTIONS
-
-# short usage
 usage() {
   cat<<-EOF
 	A command-line tool for manupulating pulseaudio sound state
@@ -81,6 +39,30 @@ usage() {
 	EOF
   exit 0
 }
+
+# --------------------------------------------------
+# VARIABLES
+
+# Get audio source, sink and state
+state=$(mktemp); trap 'rm -f $state' 0
+pacmd dump > $state
+
+sink=$(cat $state   | grep set-default-sink   | cut -d" " -f2)
+source=$(cat $state | grep set-default-source | cut -d" " -f2)
+
+volstate=$(cat $state  | grep set-sink-volume | cut -d" " -f3)
+mutestate=$(cat $state | grep set-sink-mute   | cut -d" " -f3)
+
+# --------------------------------------------------
+# useful constants
+ME=$(basename $0)
+REAL_ME=$(readlink -f $0)
+
+max_volume="0x10000"
+inc=$(($max_volume / 20))
+
+# --------------------------------------------------
+# FUNCTIONS
 
 # Returns volume 0-100
 _getratio() {
