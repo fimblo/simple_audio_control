@@ -4,7 +4,7 @@
 # --------------------------------------------------
 usage() {
   cat<<-EOF
-	A command-line tool for manupulating pulseaudio sound state
+	Some command-line tools for manupulating pulseaudio sound state
     
 	audio.sh, vup, vdown, vmute, vstate
 	Usage: audio.sh [-h|--help] [ma-+]+ [=]

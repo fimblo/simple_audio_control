@@ -1,6 +1,22 @@
-# simple_audio_control
+# simple\_audio\_control
 
-	A command-line tool for manupulating pulseaudio sound state
+Some simple command-line tools for manipulating PulseAudio sound state.
+
+Installation
+==
+To get the simple volume control commands in place, symlink audio.sh to some place in your $PATH, for example:
+
+	cd ~/bin
+	ln -s path/to/simple_audio_control/audio.sh vup
+	ln -s path/to/simple_audio_control/audio.sh vdown
+	ln -s path/to/simple_audio_control/audio.sh vmute
+	ln -s path/to/simple_audio_control/audio.sh vstate
+
+If you want to use the source script audio.sh, you can safely move it (or symlink it) to your $PATH, it's completely stand-alone.
+ 
+--
+
+	Some command-line tools for manupulating pulseaudio sound state
     
 	audio.sh, vup, vdown, vmute, vstate
 	Usage: audio.sh [-h|--help] [ma-+]+ [=]
