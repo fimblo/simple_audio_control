@@ -51,7 +51,13 @@ sink=$(cat $state   | grep set-default-sink   | cut -d" " -f2)
 source=$(cat $state | grep set-default-source | cut -d" " -f2)
 
 volstate=$(cat $state  | grep set-sink-volume | cut -d" " -f3)
-mutestate=$(cat $state | grep set-sink-mute   | cut -d" " -f3)
+muted=$(cat $state | grep set-sink-mute   | cut -d" " -f3)
+if [[ $muted == "yes" ]] ; then
+  mutestate="muted"
+else
+  mutestate="off"
+fi
+#mutestate=$(cat $state | grep set-sink-mute   | cut -d" " -f3)
 
 # --------------------------------------------------
 # useful constants
@@ -86,8 +92,8 @@ print_bar() {
 getstate() {
   ratio=$(_getratio)
   cat <<-EOF
-	volstate:  $ratio/100
-	mutestate: $mutestate
+	volume:  $ratio/100
+	mute:    $mutestate
 	EOF
 }
 
