@@ -53,9 +53,9 @@ source=$(cat $state | grep set-default-source | cut -d" " -f2)
 volstate=$(cat $state  | grep set-sink-volume | cut -d" " -f3)
 muted=$(cat $state | grep set-sink-mute   | cut -d" " -f3)
 if [[ $muted == "yes" ]] ; then
-  mutestate="muted"
+  mutestate="Audio off (muted)"
 else
-  mutestate="off"
+  mutestate="Audio on"
 fi
 #mutestate=$(cat $state | grep set-sink-mute   | cut -d" " -f3)
 
